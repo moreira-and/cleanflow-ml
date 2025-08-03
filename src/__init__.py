@@ -1,3 +1,8 @@
-from src.infrastructure import config
+# src/__init__.py
 
-__all__ = ["config"]
+# Opcional, pode deixar vazio ou só com metadados
+__all__ = [
+    "domain",
+    "application",
+    "infrastructure",
+]
