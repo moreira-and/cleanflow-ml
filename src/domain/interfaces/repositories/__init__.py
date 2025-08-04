@@ -1,3 +1,7 @@
-from src.infrastructure import config
+from .i_command import ICommand
+from .i_query import IQuery
 
-__all__ = ["config"]
+__all__=[
+    "ICommand",
+    "IQuery"
+]

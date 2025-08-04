@@ -1,8 +1,7 @@
-# src/__init__.py
+from . import infrastructure, application, domain
 
-# Opcional, pode deixar vazio ou só com metadados
 __all__ = [
-    "domain",
-    "application",
     "infrastructure",
+    "application",
+    "domain"
 ]

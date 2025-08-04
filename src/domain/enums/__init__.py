@@ -1,3 +1,3 @@
-from src.infrastructure import config
+from .problem_type import ProblemType
 
-__all__ = ["config"]
+__all__ = ['ProblemType']

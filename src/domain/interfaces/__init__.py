@@ -1,3 +1,3 @@
-from src.infrastructure import config
+from . import repositories, strategies
 
-__all__ = ["config"]
+__all__ = ["repositories", "strategies"]

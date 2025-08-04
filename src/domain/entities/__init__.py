@@ -1,3 +1,3 @@
-from src.infrastructure import config
+from . import data
 
-__all__ = ["config"]
+__all__ = ["data"]

@@ -2,10 +2,9 @@
 # GLOBALS                                                                       #
 #################################################################################
 
-PROJECT_NAME = ds-lstm-ibov
-PYTHON_VERSION = 3.12
+PROJECT_NAME = cleanflow-ml
+PYTHON_VERSION = 3.13
 PYTHON_INTERPRETER = python
-
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
@@ -16,8 +15,6 @@ PYTHON_INTERPRETER = python
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	
-
 
 
 ## Delete all compiled Python files
@@ -39,10 +36,6 @@ format:
 	ruff check --fix
 	ruff format
 
-
-
-
-
 ## Set up Python interpreter environment
 .PHONY: create_environment
 create_environment:
@@ -60,7 +53,7 @@ create_environment:
 ## Make dataset
 .PHONY: data
 data: requirements
-	$(PYTHON_INTERPRETER) src/dataset.py
+	$(PYTHON_INTERPRETER) src/application/usecases/load_raw_data_usecase.py
 
 
 #################################################################################
