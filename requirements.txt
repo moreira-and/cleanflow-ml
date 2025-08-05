@@ -18,3 +18,5 @@ yfinance
 dotenv
 joblib
 ipython
+
+pytest

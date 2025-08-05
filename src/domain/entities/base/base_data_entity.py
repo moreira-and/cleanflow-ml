@@ -28,8 +28,8 @@ class BaseDataEntity(Generic[T]):
     """
 
     data: T = field(repr=False)
+    metadata: Mapping[str, Any] = field(default_factory=dict, repr=False)
     schema: Optional[DatasetSchema] = field(default=None, repr=False)
-    metadata: Optional[Mapping[str, Any]] = field(default_factory=dict, repr=False)
 
 
     def __post_init__(self):

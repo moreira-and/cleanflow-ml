@@ -10,3 +10,7 @@ class ICommand(ABC):
     @abstractmethod
     def delete(self, id: str) -> None:
         pass
+
+    @abstractmethod
+    def edit(self, id: str) -> None:
+        pass

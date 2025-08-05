@@ -1,4 +1,4 @@
-# bootstrap.py (no root do projeto)
+# bootstrap.py (in root)
 
 from config.dotenv_loader import load_env
 from config.logging_config import setup_logging
