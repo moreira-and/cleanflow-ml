@@ -20,3 +20,4 @@ joblib
 ipython
 
 pytest
+pytest-pythonpath

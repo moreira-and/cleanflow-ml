@@ -1,6 +1,7 @@
 from .dataset_schema import DatasetSchema
 from dataclasses import dataclass, field
 from typing import Any, Generic, TypeVar, Mapping, Optional
+from types import MappingProxyType
 
 T = TypeVar("T")
 
@@ -35,6 +36,8 @@ class BaseDataEntity(Generic[T]):
     def __post_init__(self):
         if self.data is None:
             raise ValueError("data cannot be None or null")
+        
+        object.__setattr__(self, "metadata", MappingProxyType(dict(self.metadata)))
 
     def __repr__(self):
         if hasattr(self.data, "__len__"):

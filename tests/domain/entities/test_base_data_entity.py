@@ -1,5 +1,4 @@
 import pytest
-from types import MappingProxyType
 from src.domain.entities.base import BaseDataEntity, DatasetSchema
 
 class DummySchema(DatasetSchema):
