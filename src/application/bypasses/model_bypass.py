@@ -1,5 +1,5 @@
-from src.domain.entities.data.model_input_data import ModelInputData
-from src.domain.entities.data.model_output_data import ModelOutputData
+from src.domain.entities.stages.model_input_data import ModelInputData
+from src.domain.entities.stages.model_output_data import ModelOutputData
 from src.domain.interfaces.strategies.i_model import IModel
 
 

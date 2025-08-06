@@ -1,5 +1,5 @@
-from src.domain.entities.data.selected_data import SelectedData
-from src.domain.entities.data.predicted_data import PredictedData
+from src.domain.entities.stages.selected_data import SelectedData
+from src.domain.entities.stages.predicted_data import PredictedData
 
 from src.domain.interfaces.strategies.i_model import IModel
 from src.domain.interfaces.strategies.i_data_adapter import IDataAdapter

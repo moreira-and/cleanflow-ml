@@ -1,5 +1,5 @@
-from src.domain.entities.data.raw_data import RawData
-from src.domain.entities.data.predicted_data import PredictedData
+from src.domain.entities.stages.raw_data import RawData
+from src.domain.entities.stages.predicted_data import PredictedData
 
 from src.domain.interfaces.strategies.i_data_cleaner import IDataCleaner
 from src.domain.interfaces.strategies.i_data_selector import IDataSelector

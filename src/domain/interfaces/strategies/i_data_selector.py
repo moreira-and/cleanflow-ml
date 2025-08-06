@@ -1,43 +1,54 @@
-from src.domain.entities.data.cleaned_data import CleanedData
-from src.domain.entities.data.selected_data import SelectedData
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Any, Dict
+from src.domain.entities.stages.cleaned_data import CleanedData
+from src.domain.entities.stages.selected_data import SelectedData
+
+
+@dataclass(frozen=True)
+class SelectionConfig:
+    """
+    Parameters, thresholds or metadata derived from cleaned data that drive selection logic.
+    Examples: importance scores, feature rankings, variance thresholds, selected column names.
+    """
+    details: Dict[str, Any] = None
+
+
+@dataclass(frozen=True)
+class SelectionSummary:
+    """
+    Outcome of the preparation step: the config to apply plus what was observed.
+    """
+    config: SelectionConfig
+    observations: Dict[str, Any]  # e.g., dropped features, variance explained, reasons
+
 
 class IDataSelector(ABC):
     """
-    Interface for implementing data selection strategies within the domain layer.
-    
-    This interface defines a contract for components responsible for selecting relevant
-    features or rows from pre-processed (cleaned) data. Implementations may include
-    feature selection algorithms, dimensionality reduction, or rule-based filtering.
-
-    Methods:
-        fit(data: CleanedData) -> None:
-            Fit the selector to the given cleaned data. 
-            Used to learn parameters or compute statistics required for selection.
-
-        select(data: CleanedData) -> SelectedData:
-            Apply the selection logic to the cleaned data and return the resulting subset.
+    Domain-level contract for feature/record selection strategies.
+    Stateless implementations should compute config in prepare and consume it in select.
     """
 
     @abstractmethod
-    def fit(self, data: CleanedData) -> None:
+    def prepare(self, data: CleanedData) -> SelectionSummary:
         """
-        Fit the selector to the provided cleaned data.
+        Analyze cleaned data to derive selection parameters and record observations.
 
-        Args:
-            data (CleanedData): The cleaned dataset to fit the selector on.
+        Returns:
+            SelectionSummary: includes the concrete config and what was seen (e.g., candidate features).
         """
         pass
 
     @abstractmethod
-    def select(self, data: CleanedData) -> SelectedData:
+    def select(self, data: CleanedData, config: SelectionConfig) -> SelectedData:
         """
-        Select relevant features or records from the cleaned data.
+        Apply selection logic based on a previously prepared config.
 
         Args:
-            data (CleanedData): The cleaned dataset to apply the selection to.
+            data: CleanedData to select from.
+            config: SelectionConfig produced by prepare.
 
         Returns:
-            SelectedData: The result of applying the selection logic.
+            SelectedData: subset or transformed version after selection.
         """
         pass

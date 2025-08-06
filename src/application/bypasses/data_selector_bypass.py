@@ -1,5 +1,5 @@
-from src.domain.entities.data.raw_data import RawData
-from src.domain.entities.data.selected_data import SelectedData
+from src.domain.entities.stages.raw_data import RawData
+from src.domain.entities.stages.selected_data import SelectedData
 from src.domain.interfaces.strategies.i_data_selector import IDataSelector
 
 

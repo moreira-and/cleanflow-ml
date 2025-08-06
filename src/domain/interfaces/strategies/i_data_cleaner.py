@@ -1,53 +1,36 @@
-from src.domain.entities.data.raw_data import RawData
-from src.domain.entities.data.cleaned_data import CleanedData
 from abc import ABC, abstractmethod
+from src.domain.entities.stages.raw_data import RawData
+from src.domain.entities.stages.cleaned_data import CleanedData
+from dataclasses import dataclass
+from typing import Any
+
+@dataclass(frozen=True)
+class CleaningConfig:
+    """
+    Parameters or thresholds extracted from raw data that drive cleaning logic.
+    """
+
+@dataclass(frozen=True)
+class CleaningSummary:
+    config: CleaningConfig
+    issues: dict[str, Any]  # e.g., missing rates, outliers detected
 
 class IDataCleaner(ABC):
     """
-    Interface for defining data cleaning strategies in a model-agnostic and domain-driven context.
-
-    It isolates the logic for transforming raw, unstructured, or inconsistent input data into a 
-    clean and structured form ready for analysis or modeling. By abstracting this process, the 
-    interface enables the infrastructure layer to implement diverse cleaning techniques while 
-    ensuring orchestration consistency in the application layer.
-
-    Typical responsibilities include:
-    - Handling missing values, outliers, and inconsistent formats.
-    - Applying domain-specific rules to validate or correct data.
-    - Generating metadata to guide or document the cleaning process.
-
-    Methods:
-        fit(data: RawData) -> None:
-            Inspects the raw dataset to extract metadata, rules, or thresholds
-            that inform the subsequent cleaning logic. This step may compute statistics,
-            detect patterns, or flag anomalies.
-
-        clean(data: RawData) -> CleanedData:
-            Applies the transformation logic—either predefined or derived during `fit`—
-            to produce a cleaned, structured, and reliable version of the dataset.
+    Domain-level contract for data cleaning strategies.
     """
 
     @abstractmethod
-    def fit(self, data: RawData) -> None:
+    def prepare(self, data: RawData) -> CleaningSummary:
         """
-        Analyze raw data to extract metadata or define dynamic cleaning rules.
-
-        Args:
-            data (RawData): The original, unprocessed dataset that may contain
-                            inconsistencies, missing values, or noise.
+        Inspect the raw data, extract cleaning parameters, detect issues, and
+        return a summary including a concrete config for cleaning.
         """
         pass
 
     @abstractmethod
-    def clean(self, data: RawData) -> CleanedData:
+    def clean(self, data: RawData, config: CleaningConfig) -> CleanedData:
         """
-        Execute the cleaning process based on static rules or parameters learned in `fit`.
-
-        Args:
-            data (RawData): The dataset to be cleaned.
-
-        Returns:
-            CleanedData: The resulting dataset after applying cleaning logic,
-                         now structured and ready for downstream use.
+        Apply cleaning logic based on a previously prepared config.
         """
         pass

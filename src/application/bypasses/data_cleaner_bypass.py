@@ -1,5 +1,5 @@
-from src.domain.entities.data.raw_data import RawData
-from src.domain.entities.data.cleaned_data import CleanedData
+from src.domain.entities.stages.raw_data import RawData
+from src.domain.entities.stages.cleaned_data import CleanedData
 from src.domain.interfaces.strategies.i_data_cleaner import IDataCleaner
 
 

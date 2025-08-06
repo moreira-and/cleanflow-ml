@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 
-from src.domain.entities.base.base_data_entity import BaseDataEntity
+from domain.entities.base_data_entity import BaseDataEntity
 
 T = TypeVar("T")
 
 @dataclass(frozen=True)
-class PredictedData(BaseDataEntity[T], Generic[T]):
+class SelectedData(BaseDataEntity[T], Generic[T]):
     """
-    represents data predicted for a model that is readapted to the original scales and formats in the semantic pipeline layer.
+    represents selected data entity in the semantic pipeline layer.
 
     This class serves as a domain entity encapsulating data that has 
     undergone cleaning or preprocessing steps. It is generic over the 

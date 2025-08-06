@@ -1,51 +1,82 @@
-from src.domain.entities.data.model_input_data import ModelInputData
-from src.domain.entities.data.model_output_data import ModelOutputData
-from src.domain.enums.problem_type import ProblemType
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+from src.domain.entities.stages.model_input_data import ModelInputData
+from src.domain.entities.stages.model_output_data import ModelOutputData
+from src.domain.enums.problem_type import ProblemType
+
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    """
+    Parameters or hyperparameters determined/validated before actual training.
+    Examples: learning rate, feature subset, class weights, early stopping thresholds.
+    """
+    params: Dict[str, Any]
+
+
+@dataclass(frozen=True)
+class TrainingSummary:
+    """
+    Outcome of preparing the training step: config plus observations such as
+    class imbalance, data quality warnings, estimated capacity needs.
+    """
+    config: TrainingConfig
+    observations: Dict[str, Any]
+
+
+@dataclass(frozen=True)
+class PredictionConfig:
+    """
+    Parameters derived or adjusted before prediction.
+    Examples: thresholds for classification, calibration maps, ensemble weights.
+    """
+    params: Dict[str, Any]
+
+
+@dataclass(frozen=True)
+class PredictionSummary:
+    """
+    Outcome of preparing inference: config plus diagnostics (e.g., input drift flags,
+    expected confidence adjustments).
+    """
+    config: PredictionConfig
+    diagnostics: Dict[str, Any]
+
 
 class IModel(ABC):
     """
-    Interface for model training and prediction within the domain layer.
-
-    This abstraction defines the behavior expected from any learning algorithm — statistical or machine learning — 
-    employed in the system, ensuring consistent contracts for both training and inference routines.
-
-    Design goals:
-    - Decouple orchestration logic (application layer) from concrete implementations (infrastructure layer).
-    - Allow transparent replacement of modeling strategies, regardless of the underlying framework or library.
-    - Improve testability by enabling mocking or substitution of model behavior in isolation.
-
-    Typical implementations wrap external libraries such as scikit-learn, TensorFlow, or PyTorch, 
-    and may range from simple linear models to complex deep learning architectures.
-
-    Methods:
-        train(problem_type: ProblemType, data: ModelInputData) -> None
-        predict(data: ModelInputData) -> ModelOutputData
+    Domain-level contract for modeling strategies (training + inference) with explicit
+    preparation and application phases to avoid hidden state and improve observability.
     """
 
     @abstractmethod
-    def train(self, problem_type: ProblemType, data: ModelInputData) -> None:
+    def prepare_training(self, problem_type: ProblemType, data: ModelInputData) -> TrainingSummary:
         """
-        Trains the model using the specified problem type and structured input data.
-
-        Args:
-            problem_type (ProblemType): An enumeration indicating the nature of the task 
-                                        (e.g., classification, regression).
-            data (ModelInputData): A structured object containing input features, labels, 
-                                   and optionally metadata for training.
+        Analyze input data and problem type to derive training config and surface
+        any relevant observations before actually fitting the model.
         """
         pass
 
     @abstractmethod
-    def predict(self, data: ModelInputData) -> ModelOutputData:
+    def train(self, problem_type: ProblemType, data: ModelInputData, config: TrainingConfig) -> None:
         """
-        Performs inference using the trained model on new input data.
+        Train or fit the model using the provided config. Implementations may mutate internal
+        state (i.e., learned parameters) as a result.
+        """
+        pass
 
-        Args:
-            data (ModelInputData): A structured input containing features required for prediction.
+    @abstractmethod
+    def prepare_prediction(self, data: ModelInputData) -> PredictionSummary:
+        """
+        Inspect the input for inference to derive prediction-time config (e.g., calibration)
+        and diagnostics.
+        """
+        pass
 
-        Returns:
-            ModelOutputData: Structured output containing the prediction results, 
-                             which may include raw outputs, probabilities, or predicted labels.
+    @abstractmethod
+    def predict(self, data: ModelInputData, config: PredictionConfig) -> ModelOutputData:
+        """
+        Perform inference using a precomputed prediction config.
         """
         pass
