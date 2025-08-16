@@ -25,7 +25,10 @@ venv/
 .tox/
 .coverage
 htmlcov/
-pytest_cache/
+.pytest_cache/
+
+# Dados de reviews
+.ruff_cache/
 
 # Arquivos gerados
 dist/
