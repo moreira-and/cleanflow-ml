@@ -1,69 +1,17 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Any, Generic, TypeVar, Mapping, Optional, List, Tuple, Dict, Union
+from typing import Generic, Mapping, Optional, TypeVar, List, Dict, Any
 from types import MappingProxyType
 from uuid import uuid4
 from datetime import datetime
 
-T = TypeVar("T")
+from src.domain.entities.value_objects import (
+    DatasetSchema,
+    Provenance,
+    ValidationStatus,
+)
 
-
-@dataclass(frozen=True)
-class Provenance:
-    """
-    Provenance information for a data artifact.
-
-    Attributes:
-        source: Logical origin (e.g., filename, stream name, upstream step).
-        extraction_time: When the raw capture happened.
-        transforms: Ordered tuple of transformation identifiers already applied.
-    """
-    source: str
-    extraction_time: datetime
-    transforms: Tuple[str, ...] = ()
-
-
-@dataclass(frozen=True)
-class ValidationStatus:
-    """
-    Result of validating a BaseDataEntity against its expected schema and quality rules.
-
-    Attributes:
-        is_valid: True if no blocking issues were found.
-        errors: Blocking issues (schema mismatch, missing required targets, constraint violations).
-        warnings: Non-blocking but noteworthy deviations (e.g., high missing rate).
-        details: Optional structured data for downstream introspection.
-    """
-    is_valid: bool
-    errors: Tuple[str, ...] = ()
-    warnings: Tuple[str, ...] = ()
-    details: Optional[Dict[str, Any]] = None
-
-
-@dataclass(frozen=True)
-class DatasetSchema:
-    """
-    Schema definition for a dataset in the domain.
-
-    Attributes:
-        columns: List of feature column names.
-        targets: Optional list of target/label column names.
-        feature_types: Optional map of column -> semantic type (e.g., "numeric", "categorical", "datetime").
-        constraints: Optional constraints, e.g.:
-            {
-                "not_null": ["col_a", "col_b"],
-                "range": {"col_c": (0, 1)},
-                "allowed_values": {"col_d": ["A", "B", "C"]}
-            }
-        description: Human-readable description.
-        version: Optional version string for the schema itself.
-    """
-    columns: List[str] = field(default_factory=list)
-    targets: Optional[List[str]] = None
-    feature_types: Optional[Dict[str, str]] = None
-    constraints: Optional[Dict[str, Any]] = None
-    description: Optional[str] = None
-    version: Optional[str] = None
+T = TypeVar("T")  # Tipo genérico para o payload de dados
 
 
 @dataclass(frozen=True)
@@ -74,6 +22,7 @@ class BaseDataEntity(Generic[T]):
     It carries data, its schema contract, provenance, validation status, identity/versioning
     and other optional ML-related metadata such as embeddings or feedback.
     """
+
     data: T = field(repr=False)
     schema: Optional[DatasetSchema] = field(default=None, repr=False)
     metadata: Mapping[str, Any] = field(default_factory=dict, repr=False)
@@ -131,7 +80,12 @@ class BaseDataEntity(Generic[T]):
 
         if self.schema is None:
             errors.append("No schema provided.")
-            return ValidationStatus(is_valid=False, errors=tuple(errors), warnings=tuple(warnings), details=details)
+            return ValidationStatus(
+                is_valid=False,
+                errors=tuple(errors),
+                warnings=tuple(warnings),
+                details=details,
+            )
 
         # Flatten rows depending on data shape
         # Expectation: self.data supports column access via dict-like or structured array semantics.
@@ -140,7 +94,12 @@ class BaseDataEntity(Generic[T]):
             rows = self._extract_rows_for_validation()
         except Exception as e:
             errors.append(f"Failed to extract rows for validation: {e}")
-            return ValidationStatus(is_valid=False, errors=tuple(errors), warnings=tuple(warnings), details=details)
+            return ValidationStatus(
+                is_valid=False,
+                errors=tuple(errors),
+                warnings=tuple(warnings),
+                details=details,
+            )
 
         # 1. Required columns existence
         missing_columns = [c for c in self.schema.columns if not self._column_exists(c)]
@@ -150,7 +109,9 @@ class BaseDataEntity(Generic[T]):
 
         # 2. Targets presence if supervised
         if self.schema.targets:
-            missing_targets = [t for t in self.schema.targets if not self._column_exists(t)]
+            missing_targets = [
+                t for t in self.schema.targets if not self._column_exists(t)
+            ]
             if missing_targets:
                 errors.append(f"Missing required target columns: {missing_targets}")
                 details["missing_targets"] = missing_targets
@@ -181,7 +142,9 @@ class BaseDataEntity(Generic[T]):
                             if not (low <= val <= high):
                                 out_of_bounds.append(val)
                         except TypeError:
-                            range_violations.append({col: f"type mismatch for value {val}"})
+                            range_violations.append(
+                                {col: f"type mismatch for value {val}"}
+                            )
                     if out_of_bounds:
                         range_violations.append({col: out_of_bounds[:5]})  # sample
             if range_violations:
@@ -212,9 +175,13 @@ class BaseDataEntity(Generic[T]):
                     nulls = sum(1 for r in rows if r.get(col) is None)
                     missing_rate[col] = nulls / total_rows
             details["missing_rate"] = missing_rate
-            high_missing = {col: rate for col, rate in missing_rate.items() if rate > 0.5}
+            high_missing = {
+                col: rate for col, rate in missing_rate.items() if rate > 0.5
+            }
             if high_missing:
-                warnings.append(f"High missing rate (>50%) in columns: {list(high_missing.keys())}")
+                warnings.append(
+                    f"High missing rate (>50%) in columns: {list(high_missing.keys())}"
+                )
 
         is_valid = len(errors) == 0
         status = ValidationStatus(
@@ -247,7 +214,9 @@ class BaseDataEntity(Generic[T]):
                 if isinstance(item, dict):
                     records.append(item)
                 elif isinstance(item, (list, tuple)) and self.schema:
-                    records.append({col: item[idx] for idx, col in enumerate(self.schema.columns)})
+                    records.append(
+                        {col: item[idx] for idx, col in enumerate(self.schema.columns)}
+                    )
                 else:
                     # fallback: store as single value
                     records.append({"value": item})
@@ -255,7 +224,9 @@ class BaseDataEntity(Generic[T]):
         raise ValueError("Unsupported data shape for validation extraction.")
 
     def _column_exists(self, column: str) -> bool:
-        if self.schema and column in (self.schema.columns or []) + (self.schema.targets or []):
+        if self.schema and column in (self.schema.columns or []) + (
+            self.schema.targets or []
+        ):
             # presence in schema only; actual data presence is inferred via row inspection
             rows = []
             try:

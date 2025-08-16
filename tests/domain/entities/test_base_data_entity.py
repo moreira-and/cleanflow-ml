@@ -1,17 +1,15 @@
 import pytest
-from datetime import datetime
-from src.domain.entities.base_data_entity import (
-    BaseDataEntity,
-    DatasetSchema,
-    Provenance,
-)
+from datetime import datetime, timezone
+from src.domain.entities.base import BaseDataEntity
+from src.domain.entities.value_objects import DatasetSchema, Provenance
+
 
 # Helper to build simple mock data
 def make_entity(data, schema=None):
     return BaseDataEntity(
         data=data,
         schema=schema,
-        provenance=Provenance(source="unit_test", extraction_time=datetime.now())
+        provenance=Provenance(source="unit_test", extraction_time=datetime.now(timezone.utc))
     )
 
 def test_missing_schema_returns_invalid_status():

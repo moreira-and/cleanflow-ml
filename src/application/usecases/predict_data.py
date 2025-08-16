@@ -4,17 +4,14 @@ from src.domain.entities.stages.predicted_data import PredictedData
 from src.domain.interfaces.strategies.i_model import IModel
 from src.domain.interfaces.strategies.i_data_adapter import IDataAdapter
 
+
 class PredictData:
     """
     Application use case for executing prediction using a trained model
     and an associated data adapter for transformation.
     """
 
-    def __init__(
-        self,
-        adapter: IDataAdapter,
-        model: IModel
-    ) -> None:
+    def __init__(self, adapter: IDataAdapter, model: IModel) -> None:
         self.adapter = adapter
         self.model = model
 

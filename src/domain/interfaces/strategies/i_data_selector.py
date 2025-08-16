@@ -11,6 +11,7 @@ class SelectionConfig:
     Parameters, thresholds or metadata derived from cleaned data that drive selection logic.
     Examples: importance scores, feature rankings, variance thresholds, selected column names.
     """
+
     details: Dict[str, Any] = None
 
 
@@ -19,6 +20,7 @@ class SelectionSummary:
     """
     Outcome of the preparation step: the config to apply plus what was observed.
     """
+
     config: SelectionConfig
     observations: Dict[str, Any]  # e.g., dropped features, variance explained, reasons
 

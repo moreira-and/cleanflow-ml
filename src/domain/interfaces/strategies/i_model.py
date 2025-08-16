@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from src.domain.entities.stages.model_input_data import ModelInputData
 from src.domain.entities.stages.model_output_data import ModelOutputData
 from src.domain.enums.problem_type import ProblemType
@@ -12,6 +12,7 @@ class TrainingConfig:
     Parameters or hyperparameters determined/validated before actual training.
     Examples: learning rate, feature subset, class weights, early stopping thresholds.
     """
+
     params: Dict[str, Any]
 
 
@@ -21,6 +22,7 @@ class TrainingSummary:
     Outcome of preparing the training step: config plus observations such as
     class imbalance, data quality warnings, estimated capacity needs.
     """
+
     config: TrainingConfig
     observations: Dict[str, Any]
 
@@ -31,6 +33,7 @@ class PredictionConfig:
     Parameters derived or adjusted before prediction.
     Examples: thresholds for classification, calibration maps, ensemble weights.
     """
+
     params: Dict[str, Any]
 
 
@@ -40,6 +43,7 @@ class PredictionSummary:
     Outcome of preparing inference: config plus diagnostics (e.g., input drift flags,
     expected confidence adjustments).
     """
+
     config: PredictionConfig
     diagnostics: Dict[str, Any]
 
@@ -51,7 +55,9 @@ class IModel(ABC):
     """
 
     @abstractmethod
-    def prepare_training(self, problem_type: ProblemType, data: ModelInputData) -> TrainingSummary:
+    def prepare_training(
+        self, problem_type: ProblemType, data: ModelInputData
+    ) -> TrainingSummary:
         """
         Analyze input data and problem type to derive training config and surface
         any relevant observations before actually fitting the model.
@@ -59,7 +65,9 @@ class IModel(ABC):
         pass
 
     @abstractmethod
-    def train(self, problem_type: ProblemType, data: ModelInputData, config: TrainingConfig) -> None:
+    def train(
+        self, problem_type: ProblemType, data: ModelInputData, config: TrainingConfig
+    ) -> None:
         """
         Train or fit the model using the provided config. Implementations may mutate internal
         state (i.e., learned parameters) as a result.
@@ -75,7 +83,9 @@ class IModel(ABC):
         pass
 
     @abstractmethod
-    def predict(self, data: ModelInputData, config: PredictionConfig) -> ModelOutputData:
+    def predict(
+        self, data: ModelInputData, config: PredictionConfig
+    ) -> ModelOutputData:
         """
         Perform inference using a precomputed prediction config.
         """

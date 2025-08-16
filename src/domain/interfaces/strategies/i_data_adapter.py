@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from src.domain.entities.stages.selected_data import SelectedData
 from src.domain.entities.stages.model_input_data import ModelInputData
@@ -14,6 +14,7 @@ class TransformationConfig:
     Parameters learned or derived from selected data to drive forward transformation.
     Examples: scaling factors, encoding maps, feature order, normalization statistics.
     """
+
     params: Dict[str, Any]
 
 
@@ -23,6 +24,7 @@ class TransformationSummary:
     Outcome of preparing the forward transformation.
     Contains the config and observations (e.g., which features were dropped/encoded).
     """
+
     config: TransformationConfig
     observations: Dict[str, Any]
 
@@ -33,6 +35,7 @@ class InverseConfig:
     Parameters derived from model output structure to guide inverse transformation.
     Examples: output schema mapping, decoding rules, target scaling reversal.
     """
+
     params: Dict[str, Any]
 
 
@@ -41,6 +44,7 @@ class InverseSummary:
     """
     Outcome of preparing the inverse transformation.
     """
+
     config: InverseConfig
     observations: Dict[str, Any]
 
@@ -61,7 +65,9 @@ class IDataAdapter(ABC):
         pass
 
     @abstractmethod
-    def transform(self, data: SelectedData, config: TransformationConfig) -> ModelInputData:
+    def transform(
+        self, data: SelectedData, config: TransformationConfig
+    ) -> ModelInputData:
         """
         Apply forward transformation using a previously prepared config.
         """
@@ -76,7 +82,9 @@ class IDataAdapter(ABC):
         pass
 
     @abstractmethod
-    def inverse_transform(self, data: ModelOutputData, config: InverseConfig) -> PredictedData:
+    def inverse_transform(
+        self, data: ModelOutputData, config: InverseConfig
+    ) -> PredictedData:
         """
         Apply inverse transformation using a previously prepared inverse config.
         """

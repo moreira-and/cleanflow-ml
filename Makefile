@@ -4,60 +4,75 @@
 
 PROJECT_NAME = cleanflow-ml
 PYTHON_VERSION = 3.13
-PYTHON_INTERPRETER = python
+VENV_DIR = .venv
+PYTHON_INTERPRETER = $(VENV_DIR)/Scripts/python   # Windows padrão
+ifeq ($(OS),Linux)
+    PYTHON_INTERPRETER = $(VENV_DIR)/bin/python  # Linux/macOS
+endif
+
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
 
-
-## Install Python dependencies
+## Install Python dependencies (production)
 .PHONY: requirements
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+	$(PYTHON_INTERPRETER) -m pip install -e .
 
+## Install Python dependencies (development)
+.PHONY: dev
+dev:
+	$(PYTHON_INTERPRETER) -m pip install -e ".[dev]"
 
-## Delete all compiled Python files
+## Delete all compiled Python files and caches
 .PHONY: clean
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
-
-## Lint using ruff (use `make format` to do formatting)
+## Lint using ruff (check only)
 .PHONY: lint
 lint:
-	ruff format --check
-	ruff check
+	ruff check src tests
 
-## Format source code with ruff
+## Format source code with black + ruff
 .PHONY: format
 format:
-	ruff check --fix
-	ruff format
+	black src tests
+	ruff check --fix src tests
 
-## Set up Python interpreter environment
+## Create virtual environment
 .PHONY: create_environment
 create_environment:
-	@bash -c "if [ ! -z `which virtualenvwrapper.sh` ]; then source `which virtualenvwrapper.sh`; mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); else mkvirtualenv.bat $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); fi"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
-	
-
-
+	@python -m venv $(VENV_DIR)
+	@echo ">>> Virtualenv created at $(VENV_DIR). Activate with:\nsource $(VENV_DIR)/bin/activate (Linux/macOS)\n$(VENV_DIR)\Scripts\activate.bat (Windows)"
 
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
 
-
-## Make dataset
+## Load dataset
 .PHONY: data
 data: requirements
 	$(PYTHON_INTERPRETER) src/application/usecases/load_raw_data_usecase.py
 
+## Run tests
+.PHONY: test
+test: dev
+	$(PYTHON_INTERPRETER) -m pytest -v
 
 #################################################################################
-# Self Documenting Commands                                                     #
+# COMBINED SETUP                                                                #
+#################################################################################
+
+## Full project setup (venv + dev dependencies)
+.PHONY: setup
+setup: create_environment dev lint format test
+	@echo ">>> Project setup complete."
+
+#################################################################################
+# SELF-DOCUMENTING COMMANDS                                                     #
 #################################################################################
 
 .DEFAULT_GOAL := help

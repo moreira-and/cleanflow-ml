@@ -11,6 +11,7 @@ from src.application.bypasses.data_selector_bypass import DataSelectorBypass
 from src.application.bypasses.data_adapter_bypass import DataAdapterBypass
 from src.application.bypasses.model_bypass import ModelBypass
 
+
 class End2EndPredictionFlow:
     """
     Application use case for executing prediction using a trained model
@@ -18,13 +19,13 @@ class End2EndPredictionFlow:
     """
 
     def __init__(
-        self,        
+        self,
         cleaner: IDataCleaner = None,
         selector: IDataSelector = None,
         adapter: IDataAdapter = None,
-        model: IModel = None
+        model: IModel = None,
     ) -> None:
-        
+
         self.cleaner = cleaner or DataCleanerBypass()
         self.selector = selector or DataSelectorBypass()
         self.adapter = adapter or DataAdapterBypass()
@@ -40,7 +41,7 @@ class End2EndPredictionFlow:
         Returns:
             PredictedData: Final transformed prediction.
         """
-        
+
         cleaned_data = self.cleaner.clean(data)
         selected_data = self.selector.select(cleaned_data)
         input_data = self.adapter.transform(selected_data)

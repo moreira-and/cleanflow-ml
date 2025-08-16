@@ -6,7 +6,6 @@ from src.domain.interfaces.strategies.i_model import (
     IModel,
     TrainingConfig,
     TrainingSummary,
-    PredictionConfig,
     PredictionSummary,
 )
 from src.domain.enums.problem_type import ProblemType

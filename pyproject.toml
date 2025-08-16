@@ -1,13 +1,9 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
 [project]
 name = "src"
 version = "0.0.1"
-description = "A time series forecasting model using Long Short-Term Memory (LSTM) neural networks to predict the closing price of the IBOVESPA index, Brazil\u2019s main stock market index."
+description = "A time series forecasting model using Long Short-Term Memory (LSTM) neural networks to predict the closing price of the IBOVESPA index, Brazil’s main stock market index."
 authors = [
-  { name = "Moreira, Andr\u00e9. github:moreira-and" },
+  { name = "Moreira, André", email = "moreira-and@outlook.com" },
 ]
 license = { file = "LICENSE" }
 readme = "README.md"
@@ -15,18 +11,42 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License"
 ]
-requires-python = "~=3.10.0"
+requires-python = "~=3.13.0"
 
+dependencies = [
+    "tensorflow",
+    "cloudpickle",
+    "holidays",
+    "keras",
+    "keras-tuner",
+    "loguru",
+    "matplotlib",
+    "mlflow",
+    "numpy",
+    "pandas",
+    "pandas-datareader",
+    "requests",
+    "scikit-learn",
+    "scipy",
+    "tqdm",
+    "typer",
+    "yfinance",
+    "python-dotenv",  # corrigido: package no PyPI é "python-dotenv"
+    "joblib",
+    "ipython",
+]
 
-[tool.ruff]
-line-length = 99
-src = ["src"]
-include = ["pyproject.toml", "src/**/*.py"]
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "black"
+]
 
-[tool.ruff.lint]
-extend-select = ["I"]  # Add import sorting
+[project.urls]
+author = "https://github.com/moreira-and"
+Repository = "https://github.com/moreira-and/cleanflow-ml"
+Issues = "https://github.com/moreira-and/cleanflow-ml/issues"
 
-[tool.ruff.lint.isort]
-known-first-party = ["src"]
-force-sort-within-sections = true
-
+[tool.pytest.ini_options]
+pythonpath = ["src"]

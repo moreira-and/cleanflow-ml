@@ -11,5 +11,5 @@ __all__ = [
     "SelectedData",
     "ModelInputData",
     "ModelOutputData",
-    "PredictedData"
-    ]
+    "PredictedData",
+]

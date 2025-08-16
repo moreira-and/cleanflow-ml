@@ -7,6 +7,7 @@ from src.domain.interfaces.strategies.i_data_selector import IDataSelector
 from src.application.bypasses.data_cleaner_bypass import DataCleanerBypass
 from src.application.bypasses.data_selector_bypass import DataSelectorBypass
 
+
 class EnrichmentFlow:
     """
     Application use case for executing prediction using a trained model
@@ -14,11 +15,9 @@ class EnrichmentFlow:
     """
 
     def __init__(
-        self,        
-        cleaner: IDataCleaner = None,
-        selector: IDataSelector = None
+        self, cleaner: IDataCleaner = None, selector: IDataSelector = None
     ) -> None:
-        
+
         self.cleaner = cleaner or DataCleanerBypass()
         self.selector = selector or DataSelectorBypass()
 
@@ -32,7 +31,7 @@ class EnrichmentFlow:
         Returns:
             SelectedData: Selected data.
         """
-        
+
         cleaned_data = self.cleaner.clean(data)
         selected_data = self.selector.select(cleaned_data)
 

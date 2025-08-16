@@ -4,16 +4,19 @@ from src.domain.entities.stages.cleaned_data import CleanedData
 from dataclasses import dataclass
 from typing import Any
 
+
 @dataclass(frozen=True)
 class CleaningConfig:
     """
     Parameters or thresholds extracted from raw data that drive cleaning logic.
     """
 
+
 @dataclass(frozen=True)
 class CleaningSummary:
     config: CleaningConfig
     issues: dict[str, Any]  # e.g., missing rates, outliers detected
+
 
 class IDataCleaner(ABC):
     """
