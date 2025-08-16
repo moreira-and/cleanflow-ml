@@ -1,8 +1,13 @@
 from pathlib import Path
 
-PROJ_ROOT = Path(__file__).resolve().parent
+PROJ_ROOT = Path(__file__).resolve().parent.parent
 
-CONFIG_DIR = PROJ_ROOT / "configs"
+CONFIG_DIR = PROJ_ROOT / "config"
+PARAM_DIR = CONFIG_DIR / "params"
+
+# Parameters paths
+DATASET_PARAMS_FILE = PARAM_DIR / "dataset_params.yaml"
+
 DATA_DIR = PROJ_ROOT / "data"
 ARTIFACTS_DIR = PROJ_ROOT / "artifacts"
 REPORTS_DIR = PROJ_ROOT / "reports"
@@ -28,10 +33,6 @@ Y_PROCESSED_DATA_TEST_FILE = PROCESSED_DATA_TEST_DIR / "Y_test.npy"
 PREDICTED_DATA_DIR = DATA_DIR / "predicted"
 MAIN_PREDICTED_FILE = PREDICTED_DATA_DIR / "predicted_dataset.csv"
 
-# Parameters paths
-DATASET_PARAMS_FILE = CONFIG_DIR / "dataset.yaml"
-PROCESS_PARAMS_FILE = CONFIG_DIR / "process.yaml"
-TRAIN_PARAMS_FILE = CONFIG_DIR / "train.yaml"
 
 # Artifacts paths
 MODELS_DIR = ARTIFACTS_DIR / "models"

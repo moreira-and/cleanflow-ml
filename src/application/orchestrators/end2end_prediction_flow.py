@@ -25,7 +25,6 @@ class End2EndPredictionFlow:
         adapter: IDataAdapter = None,
         model: IModel = None,
     ) -> None:
-
         self.cleaner = cleaner or DataCleanerBypass()
         self.selector = selector or DataSelectorBypass()
         self.adapter = adapter or DataAdapterBypass()

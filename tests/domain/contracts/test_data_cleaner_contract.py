@@ -21,32 +21,32 @@ class DataCleanerContract(ABC):
 
     @pytest.fixture
     @abstractmethod
-    def cleaner_factory(self) -> callable:
-        ...
+    def cleaner_factory(self) -> callable: ...
 
     @pytest.fixture
     @abstractmethod
-    def sample_raw_data(self) -> RawData:
-        ...
+    def sample_raw_data(self) -> RawData: ...
 
     @pytest.fixture
     @abstractmethod
-    def valid_raw_data(self) -> RawData:
-        ...
+    def valid_raw_data(self) -> RawData: ...
 
     @pytest.fixture
     @abstractmethod
-    def schema_preserving_checker(self) -> callable:
-        ...
+    def schema_preserving_checker(self) -> callable: ...
 
-    def test_prepare_returns_summary_with_config_and_issues(self, cleaner_factory, sample_raw_data):
+    def test_prepare_returns_summary_with_config_and_issues(
+        self, cleaner_factory, sample_raw_data
+    ):
         cleaner: IDataCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(sample_raw_data)
         assert isinstance(summary, CleaningSummary)
         assert isinstance(summary.config, CleaningConfig)
         assert summary.issues, "Expected issues detected in sample_raw_data"
 
-    def test_clean_applies_based_on_config(self, cleaner_factory, sample_raw_data, schema_preserving_checker):
+    def test_clean_applies_based_on_config(
+        self, cleaner_factory, sample_raw_data, schema_preserving_checker
+    ):
         cleaner: IDataCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(sample_raw_data)
         cleaned: CleanedData = cleaner.clean(sample_raw_data, summary.config)
@@ -58,9 +58,13 @@ class DataCleanerContract(ABC):
         summary: CleaningSummary = cleaner.prepare(sample_raw_data)
         first: CleanedData = cleaner.clean(sample_raw_data, summary.config)
         second: CleanedData = cleaner.clean(first, summary.config)
-        assert first == second, "Cleaner should be idempotent when reapplied with same config"
+        assert first == second, (
+            "Cleaner should be idempotent when reapplied with same config"
+        )
 
-    def test_no_op_on_valid_data(self, cleaner_factory, valid_raw_data, schema_preserving_checker):
+    def test_no_op_on_valid_data(
+        self, cleaner_factory, valid_raw_data, schema_preserving_checker
+    ):
         cleaner: IDataCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(valid_raw_data)
         cleaned: CleanedData = cleaner.clean(valid_raw_data, summary.config)

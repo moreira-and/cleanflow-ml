@@ -5,11 +5,9 @@ from src.domain.interfaces.strategies.i_data_cleaner import IDataCleaner
 
 
 class CleanData:
-
     def __init__(self, cleaner: IDataCleaner):
         self.cleaner = cleaner
 
     def execute(self, data: RawData) -> CleanedData:
-
         metadata = self.cleaner.fit(self, data)
         return self.cleaner.clean(data)  # -> CleanedData:

@@ -17,7 +17,6 @@ class EnrichmentFlow:
     def __init__(
         self, cleaner: IDataCleaner = None, selector: IDataSelector = None
     ) -> None:
-
         self.cleaner = cleaner or DataCleanerBypass()
         self.selector = selector or DataSelectorBypass()
 
