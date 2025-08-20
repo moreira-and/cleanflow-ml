@@ -1,12 +1,12 @@
 from src.domain.entities.stages import SelectedData, ModelInputData
-from src.domain.interfaces.strategies.i_data_adapter import (
-    IDataAdapter,
+from domain.interfaces.strategies.i_model_adapter import (
+    IModelAdapter,
     TransformationConfig,
 )
 
 
 class AdaptData:
-    def __init__(self, adapter: IDataAdapter, config: TransformationConfig = None):
+    def __init__(self, adapter: IModelAdapter, config: TransformationConfig = None):
         self.adapter = adapter
         self.config = config
 

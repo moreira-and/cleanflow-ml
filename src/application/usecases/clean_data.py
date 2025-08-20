@@ -1,11 +1,11 @@
 from src.domain.entities.stages.raw_data import RawData
 from src.domain.entities.stages.cleaned_data import CleanedData
 
-from src.domain.interfaces.strategies.i_data_cleaner import IDataCleaner
+from domain.interfaces.strategies.i_feature_cleaner import IFeatureCleaner
 
 
 class CleanData:
-    def __init__(self, cleaner: IDataCleaner):
+    def __init__(self, cleaner: IFeatureCleaner):
         self.cleaner = cleaner
 
     def execute(self, data: RawData) -> CleanedData:

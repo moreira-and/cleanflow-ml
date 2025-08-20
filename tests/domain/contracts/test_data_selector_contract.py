@@ -2,8 +2,8 @@ import pytest
 from abc import ABC, abstractmethod
 from src.domain.entities.stages.cleaned_data import CleanedData
 from src.domain.entities.stages.selected_data import SelectedData
-from src.domain.interfaces.strategies.i_data_selector import (
-    IDataSelector,
+from domain.interfaces.strategies.i_feature_selector import (
+    IFeatureSelector,
     SelectionConfig,
     SelectionSummary,
 )
@@ -38,7 +38,7 @@ class DataSelectorContract(ABC):
     def test_prepare_returns_summary_with_config_and_observations(
         self, selector_factory, sample_cleaned_data
     ):
-        selector: IDataSelector = selector_factory()
+        selector: IFeatureSelector = selector_factory()
         summary: SelectionSummary = selector.prepare(sample_cleaned_data)
         assert isinstance(summary, SelectionSummary)
         assert isinstance(summary.config, SelectionConfig)
@@ -47,14 +47,14 @@ class DataSelectorContract(ABC):
     def test_select_applies_based_on_config(
         self, selector_factory, sample_cleaned_data, selection_preserving_checker
     ):
-        selector: IDataSelector = selector_factory()
+        selector: IFeatureSelector = selector_factory()
         summary: SelectionSummary = selector.prepare(sample_cleaned_data)
         selected: SelectedData = selector.select(sample_cleaned_data, summary.config)
         assert isinstance(selected, SelectedData)
         assert selection_preserving_checker(selected, sample_cleaned_data)
 
     def test_idempotent_selection(self, selector_factory, valid_cleaned_data):
-        selector: IDataSelector = selector_factory()
+        selector: IFeatureSelector = selector_factory()
         summary: SelectionSummary = selector.prepare(valid_cleaned_data)
         first: SelectedData = selector.select(valid_cleaned_data, summary.config)
         second: SelectedData = selector.select(first, summary.config)
@@ -65,7 +65,7 @@ class DataSelectorContract(ABC):
     def test_no_destructive_on_valid(
         self, selector_factory, valid_cleaned_data, selection_preserving_checker
     ):
-        selector: IDataSelector = selector_factory()
+        selector: IFeatureSelector = selector_factory()
         summary: SelectionSummary = selector.prepare(valid_cleaned_data)
         selected: SelectedData = selector.select(valid_cleaned_data, summary.config)
         assert selection_preserving_checker(selected, valid_cleaned_data)

@@ -2,7 +2,7 @@ from src.domain.entities.stages.selected_data import SelectedData
 from src.domain.entities.stages.predicted_data import PredictedData
 
 from src.domain.interfaces.strategies.i_model import IModel
-from src.domain.interfaces.strategies.i_data_adapter import IDataAdapter
+from domain.interfaces.strategies.i_model_adapter import IModelAdapter
 
 
 class PredictData:
@@ -11,7 +11,7 @@ class PredictData:
     and an associated data adapter for transformation.
     """
 
-    def __init__(self, adapter: IDataAdapter, model: IModel) -> None:
+    def __init__(self, adapter: IModelAdapter, model: IModel) -> None:
         self.adapter = adapter
         self.model = model
 

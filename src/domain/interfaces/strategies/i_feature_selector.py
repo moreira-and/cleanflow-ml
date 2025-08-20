@@ -25,7 +25,7 @@ class SelectionSummary:
     observations: Dict[str, Any]  # e.g., dropped features, variance explained, reasons
 
 
-class IDataSelector(ABC):
+class IFeatureSelector(ABC):
     """
     Domain-level contract for feature/record selection strategies.
     Stateless implementations should compute config in prepare and consume it in select.

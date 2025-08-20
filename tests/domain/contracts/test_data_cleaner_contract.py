@@ -2,8 +2,8 @@ import pytest
 from abc import ABC, abstractmethod
 from src.domain.entities.stages.raw_data import RawData
 from src.domain.entities.stages.cleaned_data import CleanedData
-from src.domain.interfaces.strategies.i_data_cleaner import (
-    IDataCleaner,
+from domain.interfaces.strategies.i_feature_cleaner import (
+    IFeatureCleaner,
     CleaningConfig,
     CleaningSummary,
 )
@@ -38,7 +38,7 @@ class DataCleanerContract(ABC):
     def test_prepare_returns_summary_with_config_and_issues(
         self, cleaner_factory, sample_raw_data
     ):
-        cleaner: IDataCleaner = cleaner_factory()
+        cleaner: IFeatureCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(sample_raw_data)
         assert isinstance(summary, CleaningSummary)
         assert isinstance(summary.config, CleaningConfig)
@@ -47,14 +47,14 @@ class DataCleanerContract(ABC):
     def test_clean_applies_based_on_config(
         self, cleaner_factory, sample_raw_data, schema_preserving_checker
     ):
-        cleaner: IDataCleaner = cleaner_factory()
+        cleaner: IFeatureCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(sample_raw_data)
         cleaned: CleanedData = cleaner.clean(sample_raw_data, summary.config)
         assert isinstance(cleaned, CleanedData)
         assert schema_preserving_checker(cleaned, sample_raw_data)
 
     def test_idempotency_of_clean(self, cleaner_factory, sample_raw_data):
-        cleaner: IDataCleaner = cleaner_factory()
+        cleaner: IFeatureCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(sample_raw_data)
         first: CleanedData = cleaner.clean(sample_raw_data, summary.config)
         second: CleanedData = cleaner.clean(first, summary.config)
@@ -65,7 +65,7 @@ class DataCleanerContract(ABC):
     def test_no_op_on_valid_data(
         self, cleaner_factory, valid_raw_data, schema_preserving_checker
     ):
-        cleaner: IDataCleaner = cleaner_factory()
+        cleaner: IFeatureCleaner = cleaner_factory()
         summary: CleaningSummary = cleaner.prepare(valid_raw_data)
         cleaned: CleanedData = cleaner.clean(valid_raw_data, summary.config)
         assert schema_preserving_checker(cleaned, valid_raw_data)

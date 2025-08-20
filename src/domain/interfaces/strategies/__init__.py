@@ -1,7 +1,13 @@
-from .i_data_loader import IDataLoader
-from .i_data_cleaner import IDataCleaner
-from .i_data_selector import IDataSelector
-from .i_data_adapter import IDataAdapter
+from .i_feature_loader import IFeatureLoader
+from .i_feature_cleaner import IFeatureCleaner
+from .i_feature_selector import IFeatureSelector
+from .i_model_adapter import IModelAdapter
 from .i_model import IModel
 
-__all__ = ["IDataLoader", "IDataCleaner", "IDataSelector", "IDataAdapter", "IModel"]
+__all__ = [
+    "IFeatureLoader",
+    "IFeatureCleaner",
+    "IFeatureSelector",
+    "IModelAdapter",
+    "IModel",
+]

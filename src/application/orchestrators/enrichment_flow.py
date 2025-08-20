@@ -1,8 +1,8 @@
 from src.domain.entities.stages.raw_data import RawData
 from src.domain.entities.stages.selected_data import SelectedData
 
-from src.domain.interfaces.strategies.i_data_cleaner import IDataCleaner
-from src.domain.interfaces.strategies.i_data_selector import IDataSelector
+from domain.interfaces.strategies.i_feature_cleaner import IFeatureCleaner
+from domain.interfaces.strategies.i_feature_selector import IFeatureSelector
 
 from src.application.bypasses.data_cleaner_bypass import DataCleanerBypass
 from src.application.bypasses.data_selector_bypass import DataSelectorBypass
@@ -15,7 +15,7 @@ class EnrichmentFlow:
     """
 
     def __init__(
-        self, cleaner: IDataCleaner = None, selector: IDataSelector = None
+        self, cleaner: IFeatureCleaner = None, selector: IFeatureSelector = None
     ) -> None:
         self.cleaner = cleaner or DataCleanerBypass()
         self.selector = selector or DataSelectorBypass()

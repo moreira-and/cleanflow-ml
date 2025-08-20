@@ -18,7 +18,7 @@ class CleaningSummary:
     issues: dict[str, Any]  # e.g., missing rates, outliers detected
 
 
-class IDataCleaner(ABC):
+class IFeatureCleaner(ABC):
     """
     Domain-level contract for data cleaning strategies.
     """

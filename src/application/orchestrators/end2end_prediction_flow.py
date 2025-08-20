@@ -1,9 +1,9 @@
 from src.domain.entities.stages.raw_data import RawData
 from src.domain.entities.stages.predicted_data import PredictedData
 
-from src.domain.interfaces.strategies.i_data_cleaner import IDataCleaner
-from src.domain.interfaces.strategies.i_data_selector import IDataSelector
-from src.domain.interfaces.strategies.i_data_adapter import IDataAdapter
+from domain.interfaces.strategies.i_feature_cleaner import IFeatureCleaner
+from domain.interfaces.strategies.i_feature_selector import IFeatureSelector
+from domain.interfaces.strategies.i_model_adapter import IDataAdapter
 from src.domain.interfaces.strategies.i_model import IModel
 
 from src.application.bypasses.data_cleaner_bypass import DataCleanerBypass
@@ -20,8 +20,8 @@ class End2EndPredictionFlow:
 
     def __init__(
         self,
-        cleaner: IDataCleaner = None,
-        selector: IDataSelector = None,
+        cleaner: IFeatureCleaner = None,
+        selector: IFeatureSelector = None,
         adapter: IDataAdapter = None,
         model: IModel = None,
     ) -> None:

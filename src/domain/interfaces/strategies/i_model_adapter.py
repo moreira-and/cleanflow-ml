@@ -49,7 +49,7 @@ class InverseSummary:
     observations: Dict[str, Any]
 
 
-class IDataAdapter(ABC):
+class IModelAdapter(ABC):
     """
     Domain contract for mapping between selected domain data and model I/O,
     using explicit prepare → apply steps both forward (transform) and backward
